@@ -17,8 +17,8 @@ GitHub: https://github.com/giacomopc/the-marriage
 
 // Colors
 
-var FemaleColor = rgba(244, 94, 184, 1.0)
-var MaleColor = rgba(62, 83, 240, 1.0)
+var FemaleColor = rgba(0, 255, 0, 1)
+var MaleColor = rgba(0, 255, 0, 1)
 
 var Blue = rgba(86, 131, 178, 1.0)
 var Purple = rgba(147, 52, 199, 1.0)
@@ -26,8 +26,8 @@ var Pink = rgba(203, 59, 200, 1.0)
 var Green = rgba(2, 197, 41, 1.0)
 var Gray = rgba(39, 39, 39, 1.0)
 
-var SplashBackgroundColor = Blue
-var BackgroundColors = [Blue, Purple, Pink, Green, Gray, Gray]
+var SplashBackgroundColor = Green
+var BackgroundColors = Green
 var ClearColor = rgba(0, 0, 0, 0)
 
 // Elements
@@ -727,35 +727,22 @@ function attract()
 
 function kiss()
 {
-	mFemale.expand(FemaleKissGrowth)
-	mFemale.direction = bounceDirection(mFemale.direction, false)
-	mFemale.life += FemaleLifeIncreaseOnKiss
+    // Grow BOTH players the same amount
+    var growth = FemaleKissGrowth; // reuse your existing constant
+    mFemale.expand(growth);
+    mMale.expand(growth);
 
-	mMale.direction = bounceDirection(mFemale.direction, true)
-	mMale.life += MaleLifeIncreaseOnKiss
+    // Keep the memory bar bump if you like
+    mMemoryBar.expand(MemoryBarGrowthOnKiss);
 
-	mMaleSprintRemainingTime = randomInRange(MaleMinSprintTime, MaleMaxSprintTime)
+    // Create the visual memory artifacts (optional, kept as-is)
+    var memory = new Memory(MemoryType.Square, mFemale.rect.center());
+    mMemories.push(memory);
 
-	if(mFirstBounce)
-	{
-		mFemale.direction = vector2(2,1).normalized()
-		mMale.direction = vector2(-2,1).normalized()
-		mFirstBounce = false
-	}
-
-	mMemoryBar.expand(MemoryBarGrowthOnKiss)
-
-	// Create memory
-	var memory = new Memory(MemoryType.Square, mFemale.rect.center())
-	mMemories.push(memory)
-
-	// Save character positions
-	var femaleKissInfo = new KissMemory(Gender.Female, mFemale.rect.center())
-	var maleKissInfo = new KissMemory(Gender.Male, mMale.rect.center())
-
-	mKisses.push(femaleKissInfo)
-	mKisses.push(maleKissInfo)
-}
+    var femaleKissInfo = new KissMemory(Gender.Female, mFemale.rect.center());
+    var maleKissInfo = new KissMemory(Gender.Male, mMale.rect.center());
+    mKisses.push(femaleKissInfo);
+    mKisses.push(maleKissInfo);
 
 function endingLogic()
 {
